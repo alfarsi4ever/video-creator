@@ -1,0 +1,8 @@
+node_modules/
+.env
+frames/
+build/tts/
+build/vo/
+build/stills/
+build/premix.wav
+audio.wav

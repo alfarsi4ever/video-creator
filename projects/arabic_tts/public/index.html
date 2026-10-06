@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="استوديو عربي لتحويل النص إلى صوت باستخدام Google Gemini TTS" />
+    <title>مِداد — استوديو الصوت العربي</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#">مِداد<span>صوت</span></a>
+      <div id="api-status" class="status"><i></i><span>جاري فحص الاتصال…</span></div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="eyebrow">استوديو تحويل النص إلى صوت</div>
+        <h1>صوتٌ يَفهم<br /><em>كيف تقولها.</em></h1>
+        <p>حوّل النص العربي إلى أداء صوتي طبيعي، وحدّد الإحساس والسرعة والنبرة لكل جملة على حدة.</p>
+        <div class="hero-meta">
+          <span>Gemini 3.8 TTS</span><span>عربية فصحى ومصرية</span><span>ملف WAV جاهز</span>
+        </div>
+      </section>
+
+      <section class="workspace" aria-label="محرر الصوت">
+        <aside class="settings panel">
+          <div class="section-number">٠١</div>
+          <h2>هوية الصوت</h2>
+          <label for="voice">الصوت</label>
+          <select id="voice">
+            <option value="Kore">Kore — ثابت وواثق</option>
+            <option value="Sulafat">Sulafat — دافئ</option>
+            <option value="Gacrux">Gacrux — ناضج</option>
+            <option value="Achird">Achird — ودود</option>
+            <option value="Charon">Charon — إخباري</option>
+            <option value="Puck">Puck — حيوي</option>
+            <option value="Fenrir">Fenrir — متحمّس</option>
+            <option value="Leda">Leda — شبابي</option>
+            <option value="Aoede">Aoede — خفيف</option>
+            <option value="Callirrhoe">Callirrhoe — هادئ</option>
+          </select>
+
+          <label for="model">جودة التوليد</label>
+          <select id="model">
+            <option value="gemini-3.8-flash-tts">Flash — أعلى جودة</option>
+            <option value="gemini-3.8-flash-lite-tts">Flash Lite — أسرع وأوفر</option>
+          </select>
+
+          <div class="tip">
+            <strong>معلومة صغيرة</strong>
+            <p>اكتب النبرة بالعربية أو الإنجليزية. الوصف المختصر والمحدد يعطي أفضل نتيجة.</p>
+          </div>
+        </aside>
+
+        <div class="editor panel">
+          <div class="editor-head">
+            <div><div class="section-number">٠٢</div><h2>النص والإخراج</h2></div>
+            <button id="add-segment" class="text-button" type="button">＋ أضف جملة</button>
+          </div>
+
+          <div id="segments" class="segments"></div>
+
+          <div class="action-row">
+            <div class="counter"><span id="char-count">٠</span> حرف</div>
+            <button id="generate" class="generate" type="button">
+              <span class="button-label">أنشئ الملف الصوتي</span>
+              <span class="arrow">←</span>
+            </button>
+          </div>
+
+          <div id="message" class="message" role="status" aria-live="polite"></div>
+
+          <div id="result" class="result" hidden>
+            <div class="result-icon">◖</div>
+            <div class="result-main">
+              <strong>ملفك الصوتي جاهز</strong>
+              <audio id="audio" controls></audio>
+            </div>
+            <a id="download" class="download" download="arabic-tts.wav">تنزيل WAV ↓</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="samples">
+        <div class="samples-head">
+          <div><div class="section-number">٠٣</div><h2>ابدأ من عيّنة</h2></div>
+          <p>اختر مشهدًا وسنجهّز النص مع نبراته.</p>
+        </div>
+        <div id="sample-grid" class="sample-grid"></div>
+      </section>
+    </main>
+
+    <footer><span>مِداد صوت</span><span>مدعوم بواجهة Google Gemini API</span></footer>
+
+    <template id="segment-template">
+      <article class="segment">
+        <div class="segment-top">
+          <span class="segment-index"></span>
+          <button class="remove" type="button" aria-label="حذف الجملة">×</button>
+        </div>
+        <textarea class="segment-text" rows="3" maxlength="3000" placeholder="اكتب الجملة أو الفقرة هنا…"></textarea>
+        <div class="tone-row">
+          <span>النبرة</span>
+          <select class="tone">
+            <option value="natural, clear, confident Modern Standard Arabic">طبيعية وواضحة</option>
+            <option value="warm, calm, reassuring, speaking slowly">دافئة وهادئة</option>
+            <option value="energetic, joyful, enthusiastic">حماسية ومبهجة</option>
+            <option value="serious, authoritative, measured pace">رسمية وجادّة</option>
+            <option value="gentle, emotional, intimate storytelling">قصصية ومؤثرة</option>
+            <option value="news anchor, articulate, steady pace">إخبارية</option>
+            <option value="custom">نبرة مخصّصة…</option>
+          </select>
+          <input class="custom-tone" type="text" maxlength="300" placeholder="مثال: بهدوء مع لمسة من الحنين" hidden />
+        </div>
+      </article>
+    </template>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

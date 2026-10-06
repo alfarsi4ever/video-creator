@@ -1,0 +1,11 @@
+{
+  "name": "arabic-explainer-video",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Claude skill: Arabic narrated explainer videos rendered from code (Gemini TTS + headless Chrome + ffmpeg)",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "playwright-core": "^1.63.0"
+  }
+}

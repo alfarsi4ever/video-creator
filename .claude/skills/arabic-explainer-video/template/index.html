@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>فيديو شرح</title>
+<style>
+/* Palette: one accent (--acc); --ok / --bad / --warn only where they carry meaning. */
+:root { --ink:#0a1620; --panel:#12232f; --panel2:#182d3c; --line:#2a4254; --text:#f1eee6; --mute:#93a8b8;
+        --acc:#3cc4b4; --ok:#4fce8f; --bad:#f06e5a; --warn:#f0b24a; }
+* { box-sizing:border-box; margin:0; padding:0; }
+html, body { overflow:hidden; background:var(--ink); }
+body { font-family:"Dubai","Noto Kufi Arabic","Segoe UI","Tahoma",sans-serif; color:var(--text); }
+/* Sizes are in --u (1% of the frame's short side, set by engine.js), so the same page works at
+   1920×1080 and 1080×1920. On a 1080-pixel short side 1u = 10.8px. */
+#stage { position:relative; overflow:hidden; }
+#bg { position:absolute; inset:-80px; background:
+        radial-gradient(60% 55% at 78% 12%, #17364a 0%, transparent 70%),
+        radial-gradient(55% 55% at 12% 95%, #0f3038 0%, transparent 70%); }
+#dots { position:absolute; inset:-80px; opacity:.5; background-image:radial-gradient(#2b475a 2px, transparent 2.5px); background-size:60px 60px; }
+#brand { position:absolute; top:calc(var(--u)*4); right:calc(var(--u)*10); font-size:calc(var(--u)*2.8); color:var(--mute); display:flex; gap:calc(var(--u)*1.5); align-items:center; }
+#brand i { width:calc(var(--u)*1.3); height:calc(var(--u)*1.3); border-radius:4px; background:var(--acc); display:block; }
+#bar { position:absolute; bottom:0; right:0; height:8px; background:var(--acc); }
+
+.scene { position:absolute; inset:0; padding:calc(var(--u)*13) calc(var(--u)*10) calc(var(--u)*7); display:none; }
+.center { height:100%; display:flex; flex-direction:column; justify-content:center; gap:calc(var(--u)*4); }
+h1 { font-size:calc(var(--u)*12); line-height:1.25; font-weight:700; }
+h2 { font-size:calc(var(--u)*6.5); line-height:1.3; font-weight:700; margin-bottom:calc(var(--u)*3.5); }
+h2 small { display:block; font-size:calc(var(--u)*3.2); color:var(--acc); font-weight:500; }
+.lead { font-size:calc(var(--u)*5.5); line-height:1.45; color:var(--warn); font-weight:700; }
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:calc(var(--u)*3); }
+.portrait .grid { grid-template-columns:1fr; }
+.card { background:var(--panel); border:2px solid var(--line); border-radius:calc(var(--u)*2.2); padding:calc(var(--u)*2.6) calc(var(--u)*4); box-shadow:0 30px 60px rgba(0,0,0,.35); }
+.card .n { font-size:calc(var(--u)*3.4); color:var(--acc); font-weight:700; }
+.card .t { font-size:calc(var(--u)*5.6); font-weight:700; }
+.card .d { font-size:calc(var(--u)*3.6); color:var(--mute); line-height:1.45; }
+.rule { height:8px; border-radius:4px; background:var(--acc); transform-origin:right center; }
+.ltr { direction:ltr; unicode-bidi:isolate; display:inline-block; font-family:"Segoe UI",sans-serif; } /* Latin terms inside Arabic text */
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="bg"></div><div id="dots"></div>
+  <div id="brand"><i></i>اسم السلسلة أو الجهة</div>
+  <div id="scenes"></div>
+  <div id="bar"></div>
+</div>
+<script src="engine.js"></script>
+<script>
+// One entry per scene id in script.mjs. data-u="k" → the element appears when narration line k starts.
+// Anything without data-u is there from the scene's first frame (the title below: frame 0 is the thumbnail).
+const HTML = {
+  intro: `<div class="center">
+    <h1>من النص<br><span style="color:var(--acc)">إلى الفيديو</span></h1>
+    <div class="rule" style="width:40%"></div>
+    <div class="lead" data-u="1">اكتب النص… والباقي يتولاه خط الإنتاج</div>
+  </div>`,
+
+  steps: `<h2 data-u="0"><small>كيف يعمل</small>أربع مراحل</h2>
+    <div class="grid">
+      <div class="card" data-u="1"><div class="n">١</div><div class="t">النص</div><div class="d">كل جملة منطوقة = لقطة</div></div>
+      <div class="card" data-u="2"><div class="n">٢</div><div class="t">الصوت</div><div class="d">طلب واحد، ثم تقطيع</div></div>
+      <div class="card" data-u="3"><div class="n">٣</div><div class="t">التوقيت</div><div class="d">مدة الصوت تحدد الظهور</div></div>
+      <div class="card" data-u="4"><div class="n">٤</div><div class="t">التصيير</div><div class="d">إطارات ثم ملف <span class="ltr">MP4</span></div></div>
+    </div>`,
+
+  outro: `<div class="center" style="align-items:center;text-align:center">
+    <h1 data-u="0">الآن… <span style="color:var(--acc)">نصُّك أنت</span></h1>
+  </div>`,
+};
+
+// Optional per-scene animation beyond the reveals. u[k] = { at, dur } of narration line k, t in seconds.
+const DRAW = {
+  intro(s, t, u) {
+    $(s.el, ".rule").style.transform = `scaleX(${smooth((t - u[0].at) / u[0].dur)})`; // grows while line 0 is spoken
+  },
+  steps(s, t, u) {
+    // The card being narrated is lit; earlier ones settle back.
+    $$(s.el, ".card").forEach((card, i) => {
+      const k = i + 1, on = t >= u[k].at && (k === u.length - 1 || t < u[k + 1].at);
+      card.style.borderColor = on ? "var(--acc)" : "";
+    });
+  },
+};
+
+startVideo({
+  html: HTML,
+  draw: DRAW,
+  chrome(t) {
+    $(document, "#dots").style.transform = `translate(${-t * 1.6 % 60}px, ${-t * 0.9 % 60}px)`;
+    $(document, "#bg").style.transform = `translate(${Math.sin(t / 9) * 30}px, ${Math.cos(t / 11) * 20}px)`;
+    $(document, "#bar").style.width = (t / DURATION) * WIDTH + "px";
+  },
+});
+</script>
+</body>
+</html>
