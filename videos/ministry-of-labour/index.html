@@ -1,0 +1,79 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>وزارة العمل</title>
+<style>html,body{margin:0;background:#0b2a22;overflow:hidden}svg{display:block;font-family:'DejaVu Sans',sans-serif}</style></head>
+<body><script>
+window.WIDTH=1920;window.HEIGHT=1080;window.FPS=30;window.DURATION=10;
+const NS='http://www.w3.org/2000/svg',BG='#0b2a22',BG2='#12443a',AC='#f2b632',FG='#f4f1ea',MU='#8fb3a6';
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),prog=(t,a,b)=>clamp((t-a)/(b-a));
+const oC=x=>1-Math.pow(1-x,3),oE=x=>x>=1?1:1-Math.pow(2,-10*x),oB=x=>{const c=1.70158;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)},io=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+function el(tag,at,par){const e=document.createElementNS(NS,tag);for(const k in at)e.setAttribute(k,at[k]);(par||svg).appendChild(e);return e}
+function tx(par,s,x,y,size,fill,w){return el('text',{x,y,'font-size':size,fill,'font-weight':w||700,'text-anchor':'middle',direction:'rtl'},par).appendChild(document.createTextNode(s)),par.lastChild}
+const svg=document.createElementNS(NS,'svg');svg.setAttribute('width',1920);svg.setAttribute('height',1080);svg.setAttribute('viewBox','0 0 1920 1080');document.body.appendChild(svg);
+let B;
+const set=(e,tr,op)=>{e.setAttribute('transform',tr);e.setAttribute('opacity',op==null?1:op)};
+// background layers
+el('rect',{width:1920,height:1080,fill:BG});
+const band1=el('polygon',{points:'0,0 700,0 300,1080 -400,1080',fill:BG2});
+const band2=el('polygon',{points:'0,0 420,0 20,1080 -400,1080',fill:'#0f3a30'});
+const shots=[0,1,2,3].map(()=>el('g',{}));
+const [g1,g2,g3,g4]=shots;
+// shot 1
+const ring=el('circle',{cx:960,cy:540,r:520,fill:'none',stroke:AC,'stroke-width':14,'stroke-linecap':'round','stroke-dasharray':3267,transform:'rotate(-90 960 540)'},g1);
+const ring2=el('circle',{cx:960,cy:540,r:470,fill:'none',stroke:MU,'stroke-width':3,'stroke-dasharray':'6 18'},g1);
+const clip1=el('clipPath',{id:'c1'},g1);el('rect',{x:300,y:380,width:1320,height:240},clip1);
+const t1w=el('g',{'clip-path':'url(#c1)'},g1);const t1=el('g',{},t1w);tx(t1,'وزارة العمل',960,560,200,FG,800);
+const sub1=el('g',{},g1);tx(sub1,'سلطنة عُمان',960,690,64,AC,700);
+const bar1=el('rect',{x:960,y:730,width:0,height:8,rx:4,fill:MU},g1);
+// shot 2
+tx(g2,'حقوق وواجبات',960,200,110,FG,800);
+const sh2=el('g',{},g2);tx(sh2,'علاقة عمل واضحة',960,290,52,MU,600);
+function person(par,x,y){const g=el('g',{transform:`translate(${x},${y})`},par);el('circle',{cx:0,cy:-50,r:44,fill:AC},g);el('path',{d:'M-90,90 C-90,10 90,10 90,90 Z',fill:AC},g);return g}
+function building(par,x,y){const g=el('g',{transform:`translate(${x},${y})`},par);el('rect',{x:-70,y:-80,width:140,height:170,fill:AC},g);for(let i=0;i<3;i++)for(let j=0;j<3;j++)el('rect',{x:-48+j*40,y:-60+i*46,width:24,height:28,fill:BG},g);return g}
+const cardR=el('g',{},g2),cardL=el('g',{},g2);
+el('rect',{x:-260,y:-180,width:520,height:420,rx:36,fill:BG2,stroke:MU,'stroke-width':3},cardR);person(cardR,0,-20);tx(cardR,'العامل',0,200,64,FG,700);
+el('rect',{x:-260,y:-180,width:520,height:420,rx:36,fill:BG2,stroke:MU,'stroke-width':3},cardL);building(cardL,0,-30);tx(cardL,'صاحب العمل',0,200,64,FG,700);
+const link=el('line',{x1:1320,y1:630,x2:600,y2:630,stroke:AC,'stroke-width':8,'stroke-linecap':'round'},g2);
+const node=el('g',{},g2);el('circle',{r:56,fill:AC},node);el('path',{d:'M-24,2 L-6,20 L26,-18',fill:'none',stroke:BG,'stroke-width':10,'stroke-linecap':'round','stroke-linejoin':'round'},node);
+// shot 3
+tx(g3,'بيئة عمل آمنة',960,200,110,FG,800);
+const sh=el('g',{},g3);
+el('path',{d:'M0,-190 L170,-130 V30 C170,130 85,190 0,230 C-85,190 -170,130 -170,30 V-130 Z',fill:BG2,stroke:AC,'stroke-width':12,'stroke-linejoin':'round'},sh);
+const shk=el('path',{d:'M-70,10 L-20,60 L75,-50',fill:'none',stroke:AC,'stroke-width':22,'stroke-linecap':'round','stroke-linejoin':'round','stroke-dasharray':260},sh);
+const rows=['معدات الوقاية','تدريب العاملين','فحص دوري'].map((s,i)=>{const g=el('g',{},g3);el('rect',{x:-330,y:-60,width:660,height:120,rx:28,fill:BG2,stroke:MU,'stroke-width':3},g);tx(g,s,40,24,54,FG,700);const c=el('g',{transform:'translate(-250,0)'},g);el('circle',{r:36,fill:'none',stroke:MU,'stroke-width':5},c);const k=el('path',{d:'M-16,0 L-4,12 L17,-12',fill:'none',stroke:AC,'stroke-width':10,'stroke-linecap':'round','stroke-linejoin':'round','stroke-dasharray':50},c);const f=el('circle',{r:36,fill:AC},c);return{g,k,f,c}});
+// shot 4
+const t4=el('g',{},g4);tx(t4,'فرص عمل',960,200,110,FG,800);
+const bars=[130,200,170,270,340,430].map((h,i)=>{const r=el('rect',{x:0,y:0,width:100,height:h,rx:14,fill:i==5?AC:'#2c6b5b'},g4);return{r,h,i}});
+const arrow=el('polyline',{points:'',fill:'none',stroke:FG,'stroke-width':10,'stroke-linecap':'round','stroke-linejoin':'round'},g4);
+const fin=el('g',{},g4);tx(fin,'وزارة العمل',960,540,210,FG,800);tx(fin,'سلطنة عُمان',960,650,64,AC,700);
+const fine=tx(g4,'فيديو توضيحي · غير رسمي',960,1010,34,MU,500);
+// wipe + progress
+const wipe=el('rect',{x:0,y:0,width:1920,height:1080,fill:AC});
+const pbar=el('rect',{x:1920,y:1070,width:0,height:10,fill:AC});
+let cuts=[2.5,5,7.5],S=[0,2.5,5,7.5,10],TK=[5.5,6,6.5],RV=9;
+window.ready=(async()=>{try{B=await (await fetch('beats.json')).json();cuts=B.shots.slice(1).map(s=>s.start);S=B.shots.map(s=>s.start).concat([B.duration]);TK=B.ticks;RV=B.reveal}catch(e){}await document.fonts.ready;seek(0)})();
+window.seek=function(t){
+ band1.setAttribute('transform',`translate(${-t*14},0)`);band2.setAttribute('transform',`translate(${t*26},0)`);
+ const idx=t>=S[3]?3:t>=S[2]?2:t>=S[1]?1:0;shots.forEach((g,i)=>g.setAttribute('display',i==idx?'inline':'none'));
+ const lt=t-S[idx];
+ if(idx==0){const p=oC(prog(lt,0,1.4));ring.setAttribute('stroke-dashoffset',3267*(1-p));ring2.setAttribute('transform',`rotate(${t*20} 960 540)`);
+  const a=oE(prog(lt,-0.25,0.6));set(t1,`translate(0,${(1-a)*260})`);const b=oC(prog(lt,0.6,1.3));set(sub1,`translate(${(1-b)*300},0)`,b);bar1.setAttribute('width',560*oE(prog(lt,0.8,1.8)));bar1.setAttribute('x',960+280-560*oE(prog(lt,0.8,1.8)))}
+ if(idx==1){const a=oB(prog(lt,0.05,0.7)),b=oB(prog(lt,0.2,0.85)),dr=Math.sin(lt*2)*6;
+  set(cardR,`translate(${1320+(1-a)*700},${700+dr}) scale(${Math.max(a,0.001)})`);set(cardL,`translate(${600-(1-b)*700},${700-dr}) scale(${Math.max(b,0.001)})`);
+  set(sh2,`translate(0,${(1-oC(prog(lt,0.1,0.6)))*-40})`,oC(prog(lt,0.1,0.6)));
+  const l=oE(prog(lt,0.9,1.5));link.setAttribute('x1',1050);link.setAttribute('y1',700);link.setAttribute('y2',700);link.setAttribute('x2',1050-0*l);
+  link.setAttribute('x1',1060);link.setAttribute('x2',1060-200*l);
+  const n=oB(prog(lt,1.4,1.9));set(node,`translate(960,700) scale(${Math.max(n,0.001)})`,n>0?1:0)}
+ if(idx==2){const a=oB(prog(lt,0.05,0.7));set(sh,`translate(520,640) scale(${Math.max(a,0.001)}) rotate(${(1-a)*-20})`);
+  shk.setAttribute('stroke-dashoffset',260*(1-oC(prog(lt,0.5,1.1))));
+  rows.forEach((r,i)=>{const e=oC(prog(lt,0.2+i*0.12,0.7+i*0.12));set(r.g,`translate(${1280+(1-e)*500},${480+i*160})`,e);
+   const tk=prog(t,TK[i],TK[i]+0.25);r.f.setAttribute('r',36*oB(tk)>0?36*oB(tk):0);r.k.setAttribute('stroke','#0b2a22');r.k.setAttribute('stroke-dashoffset',50*(1-oC(prog(t,TK[i]+0.05,TK[i]+0.3))));r.f.setAttribute('opacity',tk>0?1:0);r.k.setAttribute('opacity',tk>0?1:0)})}
+ if(idx==3){const a=oC(prog(lt,0.05,0.5));set(t4,`translate(0,${(1-a)*-60})`,t>=RV?1-oC(prog(t,RV,RV+0.3)):a);
+  const pts=[];const out=1-oC(prog(t,RV,RV+0.6));
+  bars.forEach(b=>{const e=oE(prog(lt,0.3+b.i*0.1,1.0+b.i*0.1))*(t>=RV?1-oE(prog(t,RV+b.i*0.04,RV+0.5+b.i*0.04)):1);const h=b.h*e;const x=1380-(5-b.i)*170-50;b.r.setAttribute('x',x);b.r.setAttribute('y',850-h);b.r.setAttribute('height',Math.max(h,0.01));pts.push((x+50)+','+(850-h-50))});
+  arrow.setAttribute('points',pts.join(' '));arrow.setAttribute('opacity',out*prog(lt,1.2,1.6));
+  const f=oB(prog(t,RV+0.2,RV+0.8));set(fin,`translate(960,540) scale(${Math.max(f,0.001)}) translate(-960,-540)`,t>=RV+0.2?1:0);fine.setAttribute('opacity',prog(t,RV+0.5,RV+0.9))}
+ fine.parentNode===g4&&0;
+ let wx=1920;for(const c of cuts){if(t>=c-0.3&&t<c)wx=1920*(1-io(prog(t,c-0.3,c)));else if(t>=c&&t<=c+0.35)wx=-1920*io(prog(t,c,c+0.35))}
+ wipe.setAttribute('x',wx);
+ pbar.setAttribute('width',1920*t/10);pbar.setAttribute('x',1920-1920*t/10);
+};
+</script></body></html>

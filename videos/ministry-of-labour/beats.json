@@ -1,0 +1,5 @@
+{"bpm":120,"duration":10,"fps":30,
+ "shots":[{"id":"title","start":0,"end":2.5},{"id":"rights","start":2.5,"end":5},{"id":"safety","start":5,"end":7.5},{"id":"jobs","start":7.5,"end":10}],
+ "ticks":[5.5,6.0,6.5],"reveal":9.0,
+ "events":[{"t":2.5,"type":"wipe"},{"t":5.0,"type":"wipe"},{"t":7.5,"type":"wipe"},
+  {"t":5.5,"type":"click"},{"t":6.0,"type":"click"},{"t":6.5,"type":"click"},{"t":9.0,"type":"reveal"},{"t":0.0,"type":"hit"}]}
