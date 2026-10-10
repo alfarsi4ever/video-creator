@@ -1,0 +1,83 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>أبيات</title>
+<style>
+@font-face{font-family:Amiri;font-weight:400;src:url(fonts/amiri-arabic-400-normal.woff2)}
+@font-face{font-family:Amiri;font-weight:700;src:url(fonts/amiri-arabic-700-normal.woff2)}
+html,body{margin:0;background:#070b1a;overflow:hidden}
+#st{position:relative;width:1920px;height:1080px;overflow:hidden;font-family:Amiri,serif;direction:rtl}
+#halo{position:absolute;inset:0}
+.verse{position:absolute;left:0;top:0;width:1920px;height:1080px}
+.line{position:absolute;left:0;width:1920px;display:flex;justify-content:center;direction:rtl;gap:0.32em;font-size:104px;line-height:1.7;font-weight:400;white-space:nowrap}
+.w{display:inline-block;will-change:opacity}
+svg{position:absolute;left:0;top:0}
+</style></head><body><div id="st"><div id="halo"></div>
+<svg id="deco" width="1920" height="1080" viewBox="0 0 1920 1080"></svg></div>
+<script>
+window.WIDTH=1920;window.HEIGHT=1080;window.FPS=30;window.DURATION=34;
+const NS='http://www.w3.org/2000/svg',st=document.getElementById('st'),halo=document.getElementById('halo'),deco=document.getElementById('deco');
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),prog=(t,a,b)=>clamp((t-a)/(b-a));
+const oC=x=>1-Math.pow(1-x,3),io=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const GOLD='#e9c46a',CREAM='#efe6d2',GLOW='#fbe3a1';
+let P,B,V=[],ring=[];
+function el(tag,at,par){const e=document.createElementNS(NS,tag);for(const k in at)e.setAttribute(k,at[k]);(par||deco).appendChild(e);return e}
+const strip=s=>s.replace(/[ً-ٰٟ]/g,'').replace(/\s/g,'');
+window.ready=(async()=>{
+ P=await (await fetch('poem.json')).json();B=await (await fetch('beats.json')).json();
+ await Promise.all([document.fonts.load('104px Amiri'),document.fonts.load('700 104px Amiri')]);await document.fonts.ready;
+ const num=['١','٢','٣'];
+ P.verses.forEach((v,i)=>{
+  const root=document.createElement('div');root.className='verse';st.appendChild(root);
+  const lines=v.map((h,k)=>{const d=document.createElement('div');d.className='line';d.style.top=(k?640:370)+'px';d.style.transform=`translateX(${k?-110:110}px)`;
+   const ws=h.split(/\s+/).map(w=>{const s=document.createElement('span');s.className='w';s.textContent=w;d.appendChild(s);return{s,len:strip(w).length}});
+   root.appendChild(d);return{d,ws}});
+  // word timing
+  const vo=B.voices[i];
+  lines.forEach((L,k)=>{const [a,b]=vo.h[k];const wt=L.ws.map((w,j)=>w.len+(j==L.ws.length-1?3:0)+1);const tot=wt.reduce((x,y)=>x+y,0);let c=0;
+   L.ws.forEach((w,j)=>{w.t=vo.start+a+(b-a)*c/tot;c+=wt[j]})});
+  V.push({root,lines,vo,i});
+  ring.push({num:num[i]});
+ });
+ // deco: numeral ring, rule
+ deco.innerHTML='';
+ window.rc=el('circle',{cx:960,cy:190,r:52,fill:'none',stroke:'#2a3354','stroke-width':3});
+ window.ra=el('circle',{cx:960,cy:190,r:52,fill:'none',stroke:GOLD,'stroke-width':5,'stroke-linecap':'round','stroke-dasharray':326.7,transform:'rotate(-90 960 190)'});
+ window.rt=el('text',{x:960,y:212,'font-size':64,fill:GOLD,'text-anchor':'middle','font-family':'Amiri','font-weight':700});rt.textContent='';
+ window.rule=el('line',{x1:960,y1:600,x2:960,y2:600,stroke:GOLD,'stroke-width':2,'stroke-linecap':'round'});
+ window.diamond=el('rect',{x:-9,y:-9,width:18,height:18,fill:GOLD,transform:'translate(960 600) rotate(45)'});
+ window.fade=el('rect',{x:0,y:0,width:1920,height:1080,fill:'#070b1a',opacity:0});
+ seek(0);
+})();
+window.seek=function(t){
+ // living background
+ const gx=960+Math.sin(t*0.18)*260,gy=520+Math.cos(t*0.13)*120;
+ halo.style.background=`radial-gradient(900px 620px at ${gx}px ${gy}px,rgba(233,196,106,.16),rgba(233,196,106,0) 70%),radial-gradient(1400px 900px at 1500px 160px,rgba(70,90,170,.28),rgba(70,90,170,0) 70%),linear-gradient(180deg,#0a1230 0%,#070b1a 70%)`;
+ let cur=-1;
+ V.forEach(({root,lines,vo,i})=>{
+  const S=vo.start,E=S+vo.dur;
+  const a=oC(prog(t,S-0.6,S+0.4))*(1-io(prog(t,E+(i==V.length-1?2.4:0.2),E+(i==V.length-1?3.6:1.0))));
+  root.style.opacity=a;root.style.display=a>0.001?'block':'none';
+  if(t>=S-0.6&&t<E+1.2)cur=i;
+  lines.forEach(L=>L.ws.forEach((w,j)=>{
+   const r=oC(prog(t,w.t,w.t+0.5)),g=1-prog(t,w.t+0.2,w.t+1.6);
+   const op=0.14+0.86*r;
+   w.s.style.opacity=op;
+   w.s.style.transform=`translateY(${(1-r)*16}px)`;
+   w.s.style.filter=r<1?`blur(${(1-r)*5}px)`:'none';
+   const col=g>0&&r>0?GLOW:CREAM;
+   w.s.style.color=col;
+   w.s.style.textShadow=r>0?`0 0 ${10+34*g*r}px rgba(233,196,106,${.15+.55*g*r})`:'none';
+  }));
+ });
+ if(cur<0&&t>=V[V.length-1].vo.start)cur=V.length-1;
+ const v=V[Math.max(cur,0)];
+ if(v){const S=v.vo.start,E=S+v.vo.dur;
+  rt.textContent=ring[v.i].num;const p=prog(t,S,E);
+  ra.setAttribute('stroke-dashoffset',326.7*(1-p));
+  const ru=oC(prog(t,S-0.4,S+1.2))*(1-io(prog(t,E+0.2,E+1.0)))*(v.i==V.length-1?1-io(prog(t,E+2.4,E+3.4)):1);
+  rule.setAttribute('x1',960-170*ru);rule.setAttribute('x2',960+170*ru);rule.setAttribute('opacity',ru);
+  diamond.setAttribute('transform',`translate(960 600) rotate(45) scale(${ru})`);
+  const rr=oC(prog(t,S-0.6,S+0.4))*(v.i==V.length-1?1-io(prog(t,E+2.4,E+3.4)):1);
+  [rc,ra,rt].forEach(e=>e.setAttribute('opacity',Math.min(1,rr+(cur==v.i?0:0))));
+ }
+ fade.setAttribute('opacity',io(prog(t,30.8,33.6)));
+};
+</script></body></html>
